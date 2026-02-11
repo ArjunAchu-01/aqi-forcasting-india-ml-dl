@@ -1,12 +1,82 @@
-# AQI Forecasting for Indian Cities (ML + Deep Learning)
+# AQI Forecasting for Indian Cities (Time-Series | ML | Deep Learning)
 
-This project builds an end-to-end time-series forecasting pipeline to predict **next-day Air Quality Index (AQI)** for selected Indian cities using pollutant concentration data (PM2.5, PM10, NO2, SO2, CO, O3, NH3).  
-AQI is **not provided** in the raw dataset and is computed using **CPCB AQI breakpoints**.
+This project implements an **end-to-end time-series forecasting pipeline** to predict **daily Air Quality Index (AQI)** for major Indian cities using historical pollutant concentration data.
 
-## Cities
-- Delhi
-- Mumbai
-- Bengaluru
+The project compares:
+- **Baseline models** (Naïve, Seasonal Naïve)
+- **Classical Machine Learning models** (Linear Regression, Random Forest)
+- **Deep Learning models** (LSTM, GRU)
+
+The goal is not just prediction, but **methodologically sound comparison and interpretation**.
+
+---
+
+## Cities Covered
+- **Delhi**
+- **Mumbai**
+- **Bengaluru**
+
+---
+
+## Key Objectives
+- Compute AQI from pollutant concentrations using **CPCB AQI breakpoints**
+- Perform rigorous **time-series EDA and preprocessing**
+- Implement and compare **baseline, ML, and DL models**
+- Use appropriate **regression metrics** (MAE, RMSE, sMAPE)
+- Ensure **reproducibility** and GitHub-ready structure
+
+---
+
+## Data Description
+- Daily pollutant concentrations:
+  - PM2.5, PM10, NO₂, SO₂, CO, O₃, NH₃
+- AQI is **not provided** in the raw data
+- AQI is computed by:
+  1. Calculating pollutant-wise sub-indices using CPCB breakpoints
+  2. Taking the **maximum sub-index** as daily AQI
+  3. Capping AQI to the range **[0, 500]**
+
+---
+
+## Train / Validation / Test Split (Time-Series Safe)
+
+Chronological splitting is used to avoid data leakage:
+
+- **Train:** up to 2023-12-31  
+- **Validation:** 2024-01-01 to 2024-06-30  
+- **Test:** 2024-07-01 to 2024-12-31  
+
+No random shuffling is performed.
+
+---
+
+## Models Implemented
+
+### Baselines
+- **Naïve (Persistence):**  
+  AQI(t+1) = AQI(t)
+- **Seasonal Naïve:**  
+  AQI(t+1) = AQI(t−7)
+
+### Classical Machine Learning
+- Linear Regression (lag-based features)
+- Random Forest (lag-based features)
+
+### Deep Learning
+- LSTM (14-day lookback sequences)
+- GRU (14-day lookback sequences)
+
+---
+
+## Evaluation Metrics
+This is a **regression forecasting problem**, so classification metrics (accuracy, confusion matrix) are **not applicable**.
+
+The following metrics are used:
+- **MAE** (Mean Absolute Error)
+- **RMSE** (Root Mean Squared Error)
+- **sMAPE** (Symmetric Mean Absolute Percentage Error)
+
+---
 
 
 ## Project Goals
@@ -20,6 +90,18 @@ AQI is **not provided** in the raw dataset and is computed using **CPCB AQI brea
 - Provide reproducible, GitHub-ready outputs (results tables, predictions, plots)
 
 ---
+
+## Key Takeaways
+- **Naïve persistence is extremely strong** for daily AQI forecasting
+- More complex ML and DL models **did not consistently outperform baselines**
+- Random Forest performed competitively in some cases but was not robust across cities
+- LSTM and GRU were successfully implemented but showed **limited generalization**
+- This highlights the importance of **strong baselines in time-series forecasting**
+
+---
+
+## Visual Results
+All plots are saved in:
 
 ## Repository Structure
 aqi-forecasting-india-ml-dl/
@@ -59,37 +141,6 @@ The raw dataset contains daily pollutant concentrations. AQI is computed by:
 1. Calculating pollutant **sub-indices** using CPCB breakpoint ranges
 2. Selecting the **maximum sub-index** as the daily AQI
 3. Capping AQI to **[0, 500]**
-
----
-
-## Train/Validation/Test Split (Time-Series Safe)
-Chronological splits were used to avoid leakage:
-
-- **Train:** up to 2023-12-31  
-- **Validation:** 2024-01-01 to 2024-06-30  
-- **Test:** 2024-07-01 to 2024-12-31  
-
----
-
-## Models
-### Baselines
-- **Naïve (Persistence):** AQI(t+1) = AQI(t)
-- **Seasonal Naïve:** AQI(t+1) = AQI(t-7)
-
-### Classical ML
-- Linear Regression (lag features)
-- Random Forest (lag features)
-
-### Deep Learning
-- LSTM (14-day lookback sequences)
-- GRU (14-day lookback sequences)
-
----
-
-## Evaluation Metrics
-- MAE
-- RMSE
-- sMAPE
 
 ---
 
